@@ -7,10 +7,16 @@ from dataclasses import dataclass
 
 from vaccination import Container, VaccinationDay, download_data
 from mastodon import Mastodon
+
 STATE = "./vaxbot_state.json"
 
 today = datetime.date.today()
 yesterday = today - datetime.timedelta(days=1)
+
+
+def format_number(number):
+    """ Don't mess with locale, just use . as thousands separator """
+    return f"{number:,}".replace(",", ".")
 
 
 def generate_toot(container):
@@ -18,10 +24,10 @@ def generate_toot(container):
     eight_days_ago = container[datetime.date.today() - datetime.timedelta(days=8)]
 
     message = (
-        f"Impfungen gestern ({yesterday.isoformat()}): {data_yesterday.doses_new}\n"
-        f"Impfungen eine Woche zuvor: {eight_days_ago.doses_new}\n\n"
-        f"7-Tage-Durchschnitt gestern: {container.sevenDayAverage():.0f}\n"
-        f"7-Tage-Durchschnitt eine Woche zuvor: {container.sevenDayAverage(eight_days_ago.date):.0f}"
+        f"Impfungen gestern ({yesterday.isoformat()}): {format_number(data_yesterday.doses_new)}\n"
+        f"Impfungen eine Woche zuvor: {format_number(eight_days_ago.doses_new)}\n\n"
+        f"7-Tage-Durchschnitt gestern: {format_number(int(container.sevenDayAverage()))}\n"
+        f"7-Tage-Durchschnitt eine Woche zuvor: {format_number(int(container.sevenDayAverage(eight_days_ago.date)))}"
     )
     return message
 
