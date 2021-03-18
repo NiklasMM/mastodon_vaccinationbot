@@ -47,18 +47,19 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    try:
-        with open(STATE, "r") as f:
-            state = f.read()
-        state = json.loads(state)
-    except FileNotFoundError:
-        state = {"last_toot": yesterday.isoformat()}
+    if not args.dry_run:
+        try:
+            with open(STATE, "r") as f:
+                state = f.read()
+            state = json.loads(state)
+        except FileNotFoundError:
+            state = {"last_toot": yesterday.isoformat()}
 
-    if not state["last_toot"] < today.isoformat():
-        print("Already tooted today.")
-        sys.exit(0)
-    else:
-        state["last_toot"] = today.isoformat()
+        if not state["last_toot"] < today.isoformat():
+            print("Already tooted today.")
+            sys.exit(0)
+        else:
+            state["last_toot"] = today.isoformat()
 
     # Now download and structure the data
     container = Container()
@@ -83,6 +84,6 @@ if __name__ == "__main__":
         mastodon.status_post(message, visibility="unlisted")
         print("{0}: Successfully tooted!".format(datetime.datetime.now().isoformat()))
 
-    # write state
-    with open(STATE, "w") as f:
-        f.write(json.dumps(state))
+        # write state
+        with open(STATE, "w") as f:
+            f.write(json.dumps(state))
