@@ -30,7 +30,7 @@ def format_percentage(number):
         emoji = "↘️"
     else:
         emoji = "⬇️"
-    return f"{number:.2f}% {emoji})"
+    return f"{number:.2f}% {emoji}"
 
 
 def generate_toot(container):
