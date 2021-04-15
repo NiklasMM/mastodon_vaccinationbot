@@ -30,11 +30,14 @@ def format_percentage(number):
         emoji = "↘️"
     else:
         emoji = "⬇️"
-    return f"{number:.2f}% {emoji}"
+
+    sign = "+" if number >= 0 else ""
+
+    return f"{sign}{number:.2f}% {emoji}"
 
 
 def generate_toot(container):
-    data_yesterday = container[datetime.date.today() - datetime.timedelta(days=1)]
+    data_yesterday = container[yesterday]
     eight_days_ago = container[datetime.date.today() - datetime.timedelta(days=8)]
 
     doses_yesterday = data_yesterday.doses_new
